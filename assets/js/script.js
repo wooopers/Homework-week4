@@ -1,134 +1,96 @@
-var multipleChoiceQuestions = document.querySelector('.multiple-choice-questions');
-var correct = document.querySelector('.correct');
-var incorrect = document.querySelector('.incorrect');
-var winMessage = document.querySelector('.win');
-var loseMessage = document.querySelector('.lose');
-var startButton = document.querySelector('.start-button');
-var timer = document.querySelector('.timer');
-var clock = document.querySelector('.clock');
-var gameOver = document.querySelector('.game-over');
-var scoreDisplay = document.querySelector('.score');
+// JavaScript in script.js
+document.addEventListener('DOMContentLoaded', () => {
+  const startButton = document.querySelector('.start-button');
+  const instructionsSection = document.querySelector('.instructions');
+  const questionsSection = document.querySelector('.multiple-choice-questions');
+  const questionElement = document.querySelector('.question');
+  const choicesList = document.querySelector('.choices');
+  const winMessage = document.querySelector('.win');
+  const loseMessage = document.querySelector('.lose');
+  const resetButton = document.querySelector('.reset-button');
+  const timerCount = document.querySelector('.timer-count');
+  const timerSection = document.querySelector('.timer');
 
-// Get the start button element
-const startButton = document.querySelector('.start-button');
+  let currentQuestion = -1;
 
-// Add a click event listener to the start button
-startButton.addEventListener('click', startQuiz);
+  const questions = [
+    // Array of questions the user will be asked after clicking the start button
+    {
+      question: "What mountain range is located in the Eastern United States?",
+      choices: ["Appalachian Mountains", "Rocky Mountains", "Mount Kilimanjaro", "Sierra Nevada Mountains"],
+      answer: "Appalachian Mountains"
+    },
+    {
+      question: "What is the Capital of the United States?",
+      choices: ["Chicago", "Washington D.C.", "Philadelphia", "New York"],
+      answer: "Washington D.C."
+    },
+    {
+      question: "Where is Mount Everest located?",
+      choices: ["Alaska", "Australia", "Mars", "Himalayas"],
+      answer: "Himalayas"
+    },
+    {
+      question: "How many moons does the Earth have?",
+      choices: ["Zero", "One", "Fifty", "Two hundred and fifty"],
+      answer: "One"
+    }
+  ];
 
-// Define the startQuiz function
-function startQuiz() {
-  // Hide the start page
-  const startPage = document.querySelector('#start-page');
-  startPage.style.display = 'none';
+  function startQuiz() {
+    console.log('startQuiz function is called!');
+    startButton.style.display = 'none';
+    instructionsSection.style.display = 'none';
+    questionsSection.classList.remove('hidden');
+    nextQuestion();
+  }
 
-  // Show the main challenge section
-  const mainChallenge = document.querySelector('#The-Main-Challenge');
-  mainChallenge.style.display = 'block';
-}
+  function nextQuestion() {
+    currentQuestion++;
 
+    if (currentQuestion < questions.length) {
+      const currentQuestionData = questions[currentQuestion];
+      questionElement.textContent = currentQuestionData.question;
+      choicesList.innerHTML = '';
 
-// Array of questions the user will be asked after clicking the start button
-var questions = [  {    
-    question: "What mountain range is located in the Eastern United States?",    choices: ["Appalachian Mountains", "Rocky Mountains", "Mount Kilimanjaro", "Sierra Nevada Mountains"],
-    answer: "Appalachian Mountains"
-  },
-  {
-    question: "What is the Capital of the United States?",
-    choices: ["Chicago", "Washington D.C.", "Philadelphia", "New York"], 
-    answer: "Washington D.C."
-  },
-  {
-    question: "Where is Mount Everest located?",
-    choices: ["Alaska", "Australia", "Mars", "Himalayas"],
-    answer: "Himalayas"
-  },
-  {
-    question: "How many moons does the Earth have?",
-    choices: ["Zero", "One", "Fifty", "Two hundred and fifty"],
-    answer: "One"
-   
-    const startButton = document.querySelector('.start-button');
-    const questionsSection = document.querySelector('.multiple-choice-questions');
-    
-    startButton.addEventListener('click', () => {
-      questionsSection.classList.remove('hidden');
-    });
-  }   
-];
-
-var currentQuestion = 0;
-var timeLeft = 60;
-var timerInterval;
-var userScore = 0;
-var highScores = [];
-var hasWon = false;
-
-// The init function is called when the page loads
-function init() {
-  // Get stored scores from localStorage
-  getWin();
-  getlosses();
-  getScore();
-}
-
-// Quiz starts when the start button is clicked
-function startGame() {
-  multipleChoiceQuestions.style.display = 'block';
-  timer.textContent = timeLeft;
-  startTimer();
-  displayQuestions();
-}
-
-// The Quiz timer starts when the start button is clicked
-function startTimer() {
-  timerInterval = setInterval(function() {
-    timeLeft--;
-    timer.textContent = timeLeft;
-    if(timeLeft === 0) {
+      currentQuestionData.choices.forEach((choice) => {
+        const choiceElement = document.createElement('li');
+        choiceElement.textContent = choice;
+        choiceElement.classList.add('choice');
+        choiceElement.addEventListener('click', () => checkAnswer(choice, currentQuestionData.answer));
+        choicesList.appendChild(choiceElement);
+      });
+    } else {
       endGame();
     }
-  }, 1000);
-}
-
-// Check if the user's answer is correct or incorrect
-function checkAnswer(event) {
-  var selectedChoice = event.target.textContent;
-  var currentQuestionData = questions[currentQuestion];
-  if (selectedChoice === currentQuestionData.answer) {
-    userScore += 10;
-    correct.style.display = 'block';
-    setTimeout(function() {
-      correct.style.display = 'none';
-    }, 1000);
-  } else {
-    timeLeft -= 10;
-    incorrect.style.display = 'block';
-    setTimeout(function() {
-      incorrect.style.display = 'none';
-    }, 1000);
   }
-  currentQuestion++;
-  if (currentQuestion === questions.length || timeLeft === 0) {
-    endGame();
-  } else {
-    display
 
-// The Questions are displayed when the #start-button is clicked
-function displayQuestions() {
-    var currentQuestionData = questions[currentQuestion];
-    document.querySelector(".question").textContent = currentQuestionData.question;
-    var choicesList = document.querySelector(".choices");
-    choicesList.innerHTML = "";
-    for (var i = 0; i < currentQuestionData.choices.length; i++) {
-      var choiceElement = document.createElement("li");
-      choiceElement.textContent = currentQuestionData.choices[i];
-      choiceElement.classList.add("choice");
-      choicesList.appendChild(choiceElement);
+  function checkAnswer(selectedChoice, correctAnswer) {
+    if (selectedChoice === correctAnswer) {
+      winMessage.style.display = 'block'; // Display win message
+    } else {
+      loseMessage.style.display = 'block'; // Display lose message
     }
+
+    setTimeout(() => {
+      winMessage.style.display = 'none';
+      loseMessage.style.display = 'none';
+      nextQuestion();
+    }, 1000);
   }
 
-  startButton.addEventListener('click', function() {
-    multipleChoiceQuestions.style.display = 'block';
-    startGame();
+  function endGame() {
+    questionsSection.style.display = 'none'; // Hide questions section
+    resetButton.style.display = 'block'; // Display reset button
+  }
+
+  startButton.addEventListener('click', startQuiz);
+
+  // Add an event listener to the reset button to restart the quiz
+  resetButton.addEventListener('click', () => {
+    resetButton.style.display = 'none';
+    startButton.style.display = 'block';
+    instructionsSection.style.display = 'block';
+    currentQuestion = -1;
   });
-  
+});
