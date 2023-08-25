@@ -10,9 +10,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const timerSection = document.querySelector('.timer');
 
   const questionPaths = [
-    'question1.html', // Path to your question HTML files
-    'question2.html',
-    'question3.html',
+    '/html/question1.html', // Path to your question HTML files
+    '/html/question2.html',
+    '/html/question3.html',
+    '/html/question4.html',
+    '/html/results.html',
     // Add more paths as needed
   ];
   let currentQuestion = 0;
@@ -39,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     startButton.style.display = 'none';
     instructionsSection.style.display = 'none';
     questionsSection.classList.remove('hidden');
-    nextQuestion();
+    loadQuestion(); // Load the first question
   }
 
   function checkAnswer(selectedChoice, correctAnswer) {
@@ -78,6 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
     startButton.style.display = 'block';
     instructionsSection.style.display = 'block';
     currentQuestion = 0; // Reset currentQuestion to 0
+    questionContainer.innerHTML = ''; // Clear the question container
   });
 
 });
